@@ -94,7 +94,7 @@ github      :
 
 ---
 
-## What you need to get started?
+## What do you need to get started?
 
 |Windows | OSX                | Linux           |
 |--------|--------------------|-----------------|
