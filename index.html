@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>R package development</title>
+  <meta charset="utf-8">
+  <meta name="description" content="R package development">
+  <meta name="author" content="Markus Gesmann">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+    <link rel="stylesheet" href = "assets/css/ribbons.css">
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+    <!-- END LOGO SLIDE -->
+    
+
+    <!-- TITLE SLIDE -->
+    <!-- Should I move this to a Local Layout File? -->
+    <slide class="title-slide segue nobackground">
+      <hgroup class="auto-fadein">
+        <h1>R package development</h1>
+        <h2>Lancaster University, 22 May 2013</h2>
+        <p>Markus Gesmann<br/>Maintainer of the googleVis and ChainLadder packages</p>
+      </hgroup>
+      <a href="https://github.com/mages/R_package_development/zipball/gh-pages" class="example">
+        Download
+      </a>
+      
+      <footer class = 'license'>
+        <a href='http://creativecommons.org/licenses/by-nc-sa/3.0/'>
+        <img width = '80px' src = 'http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png'>
+        </a>
+      </footer>
+    </slide>
+
+    <!-- SLIDES -->
+      <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Disclaimer</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>I am an autodidact </li>
+<li>What I present here works for me</li>
+<li>Read and follow the official <a href="http://cran.r-project.org/manuals.html">R Manuals</a> for the truth</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Agenda</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>Motivation</li>
+<li>The basics of R package development</li>
+<li>Automated package development with roxyPackage</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Why I started to develop packages</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>I was fed up with copy and paste, or even <code>source</code></li>
+<li>I wanted to share my code with others</li>
+<li>My R files were a mess </li>
+<li>I needed structure, a guiding framework</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>The challenges I had to face</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>I had lots of R files, mixing scripts and functions</li>
+<li>Very little documentation</li>
+<li>Few examples</li>
+<li>No tests</li>
+<li>Hence, it took ages to prepare my code for CRAN</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>When I start today</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>I write small functions</li>
+<li>Name them properly</li>
+<li>Document them immediately</li>
+<li>Include self contained examples</li>
+<li>Use a version control system</li>
+<li>Start writing a vignette</li>
+<li>Consider test scenarios</li>
+<li>Prepare longer examples in demo files</li>
+<li>Well, I try to do 1 to 8</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>But, what if you don&#39;t want to share your code?</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>Big mistake! </li>
+<li>You do want to share your code</li>
+<li>At least with yourself - in years to come</li>
+<li>As you get older, you will turn into someone else</li>
+<li>You will value your past documentation and discipline</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>What is R package development about?</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>A structured framework for R development</li>
+<li>Best practice </li>
+<li>Minimum checks and testing</li>
+<li>A cycle of
+
+<ul>
+<li>R CMD BUILD myPackage</li>
+<li>R CMD CHECK myPackage_Version.tar.gz</li>
+<li>R CMD INSTALL</li>
+</ul></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>What is an R package?</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>A collection of files</li>
+<li>Installed packages live in a folder called <code>library</code>
+
+<ul>
+<li>There are global and <a href="http://lamages.blogspot.co.uk/2012/04/installing-r-packages-without-admin.html">local library</a> folders</li>
+</ul></li>
+<li><code>library(myPackage)</code> will load package functions into memory</li>
+<li>Auto-completion for package functions becomes available</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>What you need to get started?</h2>
+  </hgroup>
+  <article>
+    <table><thead>
+<tr>
+<th>Windows</th>
+<th>OSX</th>
+<th>Linux</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>R</td>
+<td>R</td>
+<td>R</td>
+</tr>
+<tr>
+<td>Rtools</td>
+<td>XCode</td>
+<td>Developer tools</td>
+</tr>
+<tr>
+<td>TeX</td>
+<td>TeX</td>
+<td>TeX</td>
+</tr>
+<tr>
+<td></td>
+<td>Command Line Tools</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>Check the RStudio <a href="http://www.rstudio.com/ide/docs/packages/prerequisites">page on Package Development Prerequisites</a> for more details and download links.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Test your setup with googleVis</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>Download the source code archive of <a href="http://cran.r-project.org/web/packages/googleVis/index.html">googleVis</a></li>
+<li>Open a command line window</li>
+<li>Check if <code>R</code> is in your programme path</li>
+<li>Navigate to the download file</li>
+<li>Extract the archive: 
+
+<ul>
+<li><code>gunzip googleVis_0.4.2.tar.gz</code></li>
+<li><code>tar xvf googleVis_0.4.2.tar</code></li>
+</ul></li>
+<li>Run <code>R CMD BUILD googleVis</code></li>
+<li>Run <code>R CMD CHECK googleVis_0.4.2.tar.gz</code></li>
+<li>Run <code>R CMD INSTALL googleVis_0.4.2.tar.gz</code></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>R package structure</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li><code>DESCRIPTION</code><br></li>
+<li><code>NAMESPACE</code> </li>
+<li>sub-directories: 
+
+<ul>
+<li>mandatory: <code>R, man</code></li>
+<li>optional: <code>data, demo</code>, <code>vignettes, po</code>, <code>exec, inst, tests</code></li>
+</ul></li>
+<li>Structure can be generated by
+
+<ul>
+<li><code>package.skeleton</code> from R</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>Minimal DESCRIPTION file</h2>
+  </hgroup>
+  <article>
+    <pre><code>Package: HelloWorld
+Type: Package
+Title: What the package does (short line)
+Version: 1.0
+Date: 2013-05-05
+Author: Who wrote it
+Maintainer: Who to complain to &lt;yourfault@somewhere.net&gt;
+Description: More about what it does (maybe more than one line)
+License: What license is it under?
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Extract of googleVis DESCRIPTION</h2>
+  </hgroup>
+  <article>
+    <pre><code>Package: googleVis
+Type: Package
+Title: Interface between R and the Google Chart Tools
+Version: 0.4.2
+Date: 2013-03-16
+Authors@R: c(person(&quot;Markus&quot;, &quot;Gesmann&quot;, role = c(&quot;aut&quot;, &quot;cre&quot;),
+                     email = &quot;markus.gesmann@gmail.com&quot;),
+            person(&quot;Diego&quot;, &quot;de Castillo&quot;, role = &quot;aut&quot;,
+                     email = &quot;decastillo@gmail.com&quot;),
+                   person(&quot;Joe&quot;, &quot;Cheng&quot;, role = &quot;ctb&quot;,
+                    email = &quot;joe@rstudio.com&quot;))
+Description:  The googleVis package provides ...  
+Depends: R (&gt;= 2.11.0)
+Imports: methods,RJSONIO,utils 
+Suggests: shiny (&gt;= 0.4.0)
+License: GPL (&gt;= 2)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>NAMESPACE</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>R has a namespace management system for code in packages</li>
+<li>This system allows the package writer to specify 
+
+<ul>
+<li>which variables in the package should be exported to make them available to package users, </li>
+<li>which variables should be imported from other packages.</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>googleVis NAMESPACE</h2>
+  </hgroup>
+  <article>
+    <pre><code>importFrom(grDevices)     
+importFrom(methods, setMethod)       
+importFrom(utils, packageDescription)        
+importFrom(&quot;RJSONIO&quot;, &quot;toJSON&quot;)
+# User functions
+export(gvisMotionChart, gvisTable, gvisGeoMap,gvisTreeMap,gvisMap, gvisAnnotatedTimeLine)        
+export(gvisScatterChart, gvisPieChart, gvisOrgChart, gvisIntensityMap)       
+export(gvisLineChart, gvisAreaChart, gvisBarChart, gvisColumnChart, gvisGauge)       
+export(gvisGeoChart, gvisComboChart, gvisBubbleChart)        
+export(gvisCandlestickChart, gvisSteppedAreaChart)       
+export(gvisMerge, createGoogleGadget)        
+export(plot.gvis, renderGvis)
+# Methods        
+S3method(plot, gvis)         
+S3method(print, gvis)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>R files</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Should only contain R functions</li>
+<li>Of course, they should have plenty of inline comments</li>
+<li>Every function, which is exported to the user needs to be documented in a help file</li>
+<li><code>prompt(myfunction)</code> generates template help file for you</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>Writing R help files</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Rd-help files live in the <code>man</code> directory</li>
+<li>Format is a mixture of LaTeX and HTML</li>
+<li>Structure is always the same, only some sections are mandatory</li>
+<li>Functions are categorised by <a href="http://svn.r-project.org/R/trunk/doc/KEYWORDS">R keywords</a></li>
+<li><code>R CMD CHECK</code> checks that
+
+<ul>
+<li>all user functions are documented</li>
+<li>all arguments are listed </li>
+<li>all examples work</li>
+<li>Rd-format is valid</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Hello World Example</h2>
+  </hgroup>
+  <article>
+    <pre><code>hello &lt;- function(name){paste(&quot;Hello&quot;, name)}
+hello(&#39;World&#39;)
+[1] &quot;Hello World&quot;
+
+prompt(hello)
+# Created file named ‘hello.Rd’.
+# Edit the file and move it to the appropriate directory.
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>hello.Rd - part 1/3</h2>
+  </hgroup>
+  <article>
+    <pre><code>\name{hello}
+\alias{hello}
+%- Also NEED an &#39;\alias&#39; for EACH other topic documented here.
+\title{
+%%  ~~function to do ... ~~
+}
+\description{
+%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+}
+\usage{
+hello(name)
+}
+%- maybe also &#39;usage&#39; for other objects documented here.
+\arguments{
+  \item{name}{
+%%     ~~Describe \code{name} here~~
+}
+}
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>hello.Rd - part 2/3</h2>
+  </hgroup>
+  <article>
+    <pre><code>\details{
+%%  ~~ If necessary, more details than the description above ~~
+}
+\value{
+%%  ~Describe the value returned
+%%  If it is a LIST, use
+%%  \item{comp1 }{Description of &#39;comp1&#39;}
+%%  \item{comp2 }{Description of &#39;comp2&#39;}
+%% ...
+}
+\references{
+%% ~put references to the literature/web site here ~
+}
+\author{
+%%  ~~who you are~~
+}
+\note{
+%%  ~~further notes~~
+}
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>hello.Rd - part 3/3</h2>
+  </hgroup>
+  <article>
+    <pre><code>%% ~Make other sections like Warning with \section{Warning }{....} ~
+\seealso{
+%% ~~objects to See Also as \code{\link{help}}, ~~~
+}
+\examples{
+##---- Should be DIRECTLY executable !! ----
+##-- ==&gt;  Define data, use random,
+##--  or do  help(data=index)  for the standard data sets.
+## The function is currently defined as
+function (name) 
+{
+    paste(&quot;Hello&quot;, name)
+  }
+}
+% Add one or more standard keywords, see file &#39;KEYWORDS&#39; in the
+% R documentation directory.
+\keyword{ ~kwd1 }
+\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>Exercise 1</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Create a HelloWorld package </li>
+<li>Run a cycle of
+
+<ul>
+<li><code>R CMD BUILD</code></li>
+<li><code>R CMD CHECK</code></li>
+<li><code>R CMD INSTALL</code></li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>Simplify package development</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>Maintaining R and Rd files separately requires discipline</li>
+<li>Instead, write documentation into R file, on top of your function</li>
+<li>Let <a href="http://cran.r-project.org/web/packages/roxygen2/index.html"><code>roxygen2</code></a> extract the documentation and generate the Rd-files</li>
+<li>Even better, <a href="http://cran.r-project.org/web/packages/roxyPackage/"><code>roxyPackage</code></a> can generate a whole package from your R files
+
+<ul>
+<li>Read the <a href="http://cran.r-project.org/web/packages/roxyPackage/vignettes/roxyPackage_vignette.pdf"><code>roxyPackage</code> vignette</a> for more details</li>
+</ul></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>Case study with roxyPackage</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Create a folder called <code>HelloWorld</code></li>
+<li>Create a sub-folder called <code>R</code></li>
+<li>Create the file <code>hello.R</code> in the <code>R</code> folder</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-25" style="background:;">
+  <hgroup>
+    <h2>hello.R</h2>
+  </hgroup>
+  <article>
+    <pre><code>#&#39; Hello World function
+#&#39;
+#&#39; Say Hello
+#&#39; 
+#&#39; This function is a basic Hello World function in R. It uses the
+#&#39; \code{\link{paste}} function to say hello to someone.
+#&#39; 
+#&#39; @param name. Default is set to &#39;World&#39;.
+#&#39; @author Markus Gesmann 
+#&#39; @keywords print
+#&#39; @seealso \code{\link{paste}} 
+#&#39; @export
+#&#39; @examples
+#&#39;  hello()
+#&#39;  hello(c(&quot;Alice&quot;, &quot;Bob&quot;)
+
+hello &lt;- function(name=&quot;World&quot;){
+  paste(&quot;Hello&quot;, name)
+}
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-26" style="background:;">
+  <hgroup>
+    <h2>Define DESCRIPTION in data</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">myDescription &lt;- data.frame(
+  Package=&quot;Hello&quot;,
+  Type=&quot;Package&quot;,
+  Title=&quot;Hello World&quot;,
+  Author=&quot;Markus Gesmann &lt;markus.gesmann@gmail.com&gt;&quot;,
+  Maintainer=&quot;Markus Gesmann &lt;markus.gesmann@gmail.com&gt;&quot;,
+  Depends=&quot;R (&gt;= 2.10.0)&quot;,
+  Description=&quot;Hello World package&quot;,
+  License=&quot;GPL (&gt;= 3)&quot;
+)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-27" style="background:;">
+  <hgroup>
+    <h2>Create package with <code>roxy.package</code></h2>
+  </hgroup>
+  <article>
+    <pre><code>library(roxyPackage)
+roxy.package(
+  pck.source.dir=&quot;~/Desktop/Hello/&quot;,
+  R.libs=&quot;/Library/Frameworks/R.framework/Resources/library/&quot;,
+  repo.root=&quot;~/Desktop/repo&quot;,
+  pck.version=&quot;0.1&quot;,
+  pck.description=myDescription, 
+  actions=c(&quot;roxy&quot;, &quot;doc&quot;, &quot;html&quot;, &quot;package&quot;, &quot;check&quot;)
+)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-28" style="background:;">
+  <hgroup>
+    <h2>Advantages of roxyPackage</h2>
+  </hgroup>
+  <article>
+    <ol>
+<li>Maintain fewer files</li>
+<li>Package version is set only once</li>
+<li>Local repository is created</li>
+<li>Setting actions allows fine control over the build process</li>
+<li>You find another example in my blog post: 
+
+<ul>
+<li><a href="http://lamages.blogspot.co.uk/2013/03/create-r-package-from-single-r-file.html">Create an R package from a single R file with roxyPackage</a></li>
+</ul></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>Exercise 2:</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Create HelloWorld package with roxyPackage</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>Package demos</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Demos are plain R files in the demo sub-directory</li>
+<li>Additionally a file <code>00Index</code> is required, which lists the R files with a short description</li>
+</ul>
+
+<h3><code>00Index</code> file of googleVis</h3>
+
+<pre><code>googleVis   Examples of various googleVis functions and plots
+AnimatedGeoMap      Prototype of an animate a geo map with JavaScript
+EventListener       Examples of basic JavaScript event handlers
+WorldBank       Visualising country level data sourced from the World Bank
+Rrsp            Demo showing how googleVis can work with the R.rsp package
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-31" style="background:;">
+  <hgroup>
+    <h2>Vignettes</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Sweave Rnw-files in the <code>vignettes</code> folder are build automatically</li>
+<li>Since R-3.0.0 Markdown files are also accepted
+
+<ul>
+<li>See the <a href="http://cran.r-project.org/doc/manuals/r-patched/R-exts.html#Non_002dSweave-vignettes">R manual</a> for more details</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>Some further notes</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Data</li>
+<li><code>zzz.R</code></li>
+<li><code>inst\shiny</code></li>
+<li><code>inst\rsp</code></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-33" style="background:;">
+  <hgroup>
+    <h2>What I haven&#39;t covered ...</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Version control software, e.g.
+
+<ul>
+<li>Git, SVN, ...</li>
+<li>Poor man solution: Dropbox, Google Drive, Time Machine</li>
+</ul></li>
+<li>How to Include C, C++, Fortran code into your package</li>
+<li>How to upload your package to CRAN
+
+<ul>
+<li><a href="http://cran.r-project.org/web/packages/policies.html">CRAN policies</a></li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-34" style="background:;">
+  <hgroup>
+    <h2>Useful R development links</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li><a href="http://cran.r-project.org/doc/manuals/r-release/R-exts.html">R manual: Writing R Extensions</a></li>
+<li><a href="http://win-builder.r-project.org">Online R package builder for Windows</a></li>
+<li><a href="http://www.rstudio.com/ide/docs/packages/overview">RStudio package development</a></li>
+<li>Hadley Wickham&#39;s <a href="https://github.com/hadley/devtools/wiki/Package-basics">notes on package development</a></li>
+<li><a href="http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html">Google&#39;s R code style guide</a></li>
+<li>Testing
+
+<ul>
+<li><a href="http://www.johnmyleswhite.com/notebook/2010/08/17/unit-testing-in-r-the-bare-minimum/">John Myles White&#39;s post on testing</a></li>
+<li><a href="http://cran.r-project.org/web/packages/RUnit/vignettes/RUnit.pdf">RUnit Primer</a></li>
+<li><a href="http://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf">Hadley Wickham: testthat</a></li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-35" style="background:;">
+  <hgroup>
+    <h2>The End. So what ...?</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>You always programme for someone else and it could be your future you</li>
+<li>Package development provides you a good framework for dicipline</li>
+<li>There is no excuse. It isn&#39;t that hard.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-36" style="background:;">
+  <hgroup>
+    <h2>How I created these slides</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">library(slidify)
+setwd(&quot;~/Dropbox/Lancaster/&quot;)
+author(&quot;PackageDevelopment&quot;)
+## Edit the file index.Rmd file and then
+slidify(&quot;index.Rmd&quot;)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-37" style="background:;">
+  <hgroup>
+    <h2>Thanks</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>R Core for their hard work and support</li>
+<li>Hadley Wickham, Peter Danenberg and Manuel Eugster for <a href="http://cran.r-project.org/web/packages/roxygen2/index.html">roxygen2</a></li>
+<li>Meik Michalke for <a href="http://cran.r-project.org/web/packages/roxyPackage/index.html">roxyPackage</a></li>
+<li>Ramnath Vaidyanathan for <a href="https://github.com/ramnathv/slidify">slidify</a></li>
+<li>Rebecca and Idris for their invitation to Lancaster</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-38" style="background:;">
+  <hgroup>
+    <h2>Contact</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>Markus Gesmann</li>
+<li><a href="mailto:markus.gesmann@gmail.com">markus.gesmann gmail.com</a></li>
+<li>My blog: <a href="http://lamages.blogspot.com">http://lamages.blogspot.com</a></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-39" style="background:;">
+  <hgroup>
+    <h2>Session Info</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">sessionInfo()
+</code></pre>
+
+<pre><code>## R version 3.0.0 (2013-04-03)
+## Platform: x86_64-apple-darwin10.8.0 (64-bit)
+## 
+## locale:
+## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] slidify_0.3.3
+## 
+## loaded via a namespace (and not attached):
+## [1] digest_0.6.3   evaluate_0.4.3 formatR_0.7    knitr_1.2     
+## [5] markdown_0.5.4 stringr_0.6.2  tools_3.0.0    whisker_0.3-2 
+## [9] yaml_2.1.7
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+
+  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+<!-- Grab CDN jQuery, fall back to local if offline -->
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+<script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery-1.7.min.js"><\/script>')</script>
+<!-- Load Javascripts for Widgets -->
+<!-- LOAD HIGHLIGHTER JS FILES -->
+<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+</html>
