@@ -531,7 +531,7 @@ sessionInfo()
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] XML_3.95-0.2    RJSONIO_1.0-3   googleVis_0.4.3 slidify_0.3.3  
+## [1] slidify_0.3.3
 ## 
 ## loaded via a namespace (and not attached):
 ## [1] digest_0.6.3   evaluate_0.4.3 formatR_0.7    knitr_1.2     
