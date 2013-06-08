@@ -101,7 +101,8 @@ github      :
 |R       |R                   | R               |
 |Rtools  |XCode               | Developer tools |
 |TeX     |TeX                 | TeX             |
-|        | Command Line Tools |                 |  
+|        |Command Line Tools  |                 |  
+|qpdf    |qpdf                | qpdf            |
 
 Check the RStudio [page on Package Development Prerequisites](http://www.rstudio.com/ide/docs/packages/prerequisites) for more details and download links.
 
@@ -113,8 +114,8 @@ Check the RStudio [page on Package Development Prerequisites](http://www.rstudio
 3. Check if `R` is in your programme path
 4. Navigate to the download file
 5. Extract the archive: 
-  * `gunzip googleVis_0.4.2.tar.gz`
-  * `tar xvf googleVis_0.4.2.tar`
+  * `gunzip googleVis_0.x.y.tar.gz`
+  * `tar xvf googleVis_0.x.y.tar`
 6. Run `R CMD BUILD googleVis`
 7. Run `R CMD CHECK googleVis_0.4.2.tar.gz`
 8. Run `R CMD INSTALL googleVis_0.4.2.tar.gz`
@@ -368,7 +369,7 @@ hello <- function(name="World"){
 ## Define DESCRIPTION in data
 ```{r DESCRIPTION, tidy=FALSE}
 myDescription <- data.frame(
-  Package="Hello",
+  Package="HelloWorld",
   Type="Package",
   Title="Hello World",
   Author="Markus Gesmann <markus.gesmann@gmail.com>",
@@ -386,7 +387,7 @@ myDescription <- data.frame(
 ```
 library(roxyPackage)
 roxy.package(
-  pck.source.dir="~/Desktop/Hello/",
+  pck.source.dir="~/Desktop/HelloWorld/",
   R.libs="/Library/Frameworks/R.framework/Resources/library/",
   repo.root="~/Desktop/repo",
   pck.version="0.1",

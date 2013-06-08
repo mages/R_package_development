@@ -101,7 +101,8 @@ github      :
 |R       |R                   | R               |
 |Rtools  |XCode               | Developer tools |
 |TeX     |TeX                 | TeX             |
-|        | Command Line Tools |                 |  
+|        |Command Line Tools  |                 |  
+|qpdf    |qpdf                | qpdf            |
 
 Check the RStudio [page on Package Development Prerequisites](http://www.rstudio.com/ide/docs/packages/prerequisites) for more details and download links.
 
@@ -113,8 +114,8 @@ Check the RStudio [page on Package Development Prerequisites](http://www.rstudio
 3. Check if `R` is in your programme path
 4. Navigate to the download file
 5. Extract the archive: 
-  * `gunzip googleVis_0.4.2.tar.gz`
-  * `tar xvf googleVis_0.4.2.tar`
+  * `gunzip googleVis_0.x.y.tar.gz`
+  * `tar xvf googleVis_0.x.y.tar`
 6. Run `R CMD BUILD googleVis`
 7. Run `R CMD CHECK googleVis_0.4.2.tar.gz`
 8. Run `R CMD INSTALL googleVis_0.4.2.tar.gz`
@@ -369,7 +370,7 @@ hello <- function(name="World"){
 
 ```r
 myDescription <- data.frame(
-  Package="Hello",
+  Package="HelloWorld",
   Type="Package",
   Title="Hello World",
   Author="Markus Gesmann <markus.gesmann@gmail.com>",
@@ -388,7 +389,7 @@ myDescription <- data.frame(
 ```
 library(roxyPackage)
 roxy.package(
-  pck.source.dir="~/Desktop/Hello/",
+  pck.source.dir="~/Desktop/HelloWorld/",
   R.libs="/Library/Frameworks/R.framework/Resources/library/",
   repo.root="~/Desktop/repo",
   pck.version="0.1",
@@ -521,7 +522,7 @@ sessionInfo()
 ```
 
 ```
-## R version 3.0.0 (2013-04-03)
+## R version 3.0.1 (2013-05-16)
 ## Platform: x86_64-apple-darwin10.8.0 (64-bit)
 ## 
 ## locale:
@@ -535,7 +536,7 @@ sessionInfo()
 ## 
 ## loaded via a namespace (and not attached):
 ## [1] digest_0.6.3   evaluate_0.4.3 formatR_0.7    knitr_1.2     
-## [5] markdown_0.5.4 stringr_0.6.2  tools_3.0.0    whisker_0.3-2 
+## [5] markdown_0.5.4 stringr_0.6.2  tools_3.0.1    whisker_0.3-2 
 ## [9] yaml_2.1.7
 ```
 

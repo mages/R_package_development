@@ -223,6 +223,11 @@
 <td>Command Line Tools</td>
 <td></td>
 </tr>
+<tr>
+<td>qpdf</td>
+<td>qpdf</td>
+<td>qpdf</td>
+</tr>
 </tbody></table>
 
 <p>Check the RStudio <a href="http://www.rstudio.com/ide/docs/packages/prerequisites">page on Package Development Prerequisites</a> for more details and download links.</p>
@@ -244,8 +249,8 @@
 <li>Extract the archive: 
 
 <ul>
-<li><code>gunzip googleVis_0.4.2.tar.gz</code></li>
-<li><code>tar xvf googleVis_0.4.2.tar</code></li>
+<li><code>gunzip googleVis_0.x.y.tar.gz</code></li>
+<li><code>tar xvf googleVis_0.x.y.tar</code></li>
 </ul></li>
 <li>Run <code>R CMD BUILD googleVis</code></li>
 <li>Run <code>R CMD CHECK googleVis_0.4.2.tar.gz</code></li>
@@ -610,7 +615,7 @@ hello &lt;- function(name=&quot;World&quot;){
   </hgroup>
   <article>
     <pre><code class="r">myDescription &lt;- data.frame(
-  Package=&quot;Hello&quot;,
+  Package=&quot;HelloWorld&quot;,
   Type=&quot;Package&quot;,
   Title=&quot;Hello World&quot;,
   Author=&quot;Markus Gesmann &lt;markus.gesmann@gmail.com&gt;&quot;,
@@ -632,7 +637,7 @@ hello &lt;- function(name=&quot;World&quot;){
   <article>
     <pre><code>library(roxyPackage)
 roxy.package(
-  pck.source.dir=&quot;~/Desktop/Hello/&quot;,
+  pck.source.dir=&quot;~/Desktop/HelloWorld/&quot;,
   R.libs=&quot;/Library/Frameworks/R.framework/Resources/library/&quot;,
   repo.root=&quot;~/Desktop/repo&quot;,
   pck.version=&quot;0.1&quot;,
@@ -855,7 +860,7 @@ slidify(&quot;index.Rmd&quot;)
     <pre><code class="r">sessionInfo()
 </code></pre>
 
-<pre><code>## R version 3.0.0 (2013-04-03)
+<pre><code>## R version 3.0.1 (2013-05-16)
 ## Platform: x86_64-apple-darwin10.8.0 (64-bit)
 ## 
 ## locale:
@@ -869,7 +874,7 @@ slidify(&quot;index.Rmd&quot;)
 ## 
 ## loaded via a namespace (and not attached):
 ## [1] digest_0.6.3   evaluate_0.4.3 formatR_0.7    knitr_1.2     
-## [5] markdown_0.5.4 stringr_0.6.2  tools_3.0.0    whisker_0.3-2 
+## [5] markdown_0.5.4 stringr_0.6.2  tools_3.0.1    whisker_0.3-2 
 ## [9] yaml_2.1.7
 </code></pre>
 
